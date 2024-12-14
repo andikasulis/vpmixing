@@ -34,8 +34,8 @@ function App() {
     }
 
     // Densitas bahan bakar
-    const densityNitro = 0.74; // g/ml
-    const densityM5 = 0.80; // g/ml
+    const densityNitro = 0.74; // g/ml untuk bensin
+    const densityM5 = 0.80; // g/ml untuk M5
 
     // Hitung massa masing-masing bahan bakar
     const massNitro = totalMassValue * percentageNitroValue;
@@ -52,8 +52,8 @@ function App() {
     const lubeVolume = totalVolume * (5.0 / 1000.0);
 
     // Perhitungan AFR Campuran
-    const afrNitro = 13.0; // AFR Shell Nitro+
-    const afrM5 = 6.5; // AFR M5
+    const afrNitro = 14.7; // AFR Bensin RON 98
+    const afrM5 = 6.5; // AFR VP Racing M5
     const afrMixture = 1 / (percentageNitroValue / afrNitro + percentageM5Value / afrM5);
 
     // AFR Target
@@ -179,9 +179,6 @@ const styles = {
     borderRadius: "5px",
     cursor: "pointer",
     width: "100%",
-  },
-  buttonHover: {
-    backgroundColor: "#0056b3",
   },
   error: {
     color: "red",
