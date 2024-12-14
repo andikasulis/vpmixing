@@ -1,16 +1,13 @@
 import React, { useState } from "react";
 
 function App() {
-  // State untuk input
   const [totalMass, setTotalMass] = useState("");
   const [percentageNitro, setPercentageNitro] = useState("");
   const [percentageM5, setPercentageM5] = useState("");
 
-  // State untuk hasil
   const [results, setResults] = useState(null);
   const [error, setError] = useState(null);
 
-  // Fungsi hitung volume dan AFR
   const calculateVolumeAndAFR = () => {
     setError(null);
 
@@ -18,7 +15,6 @@ function App() {
     const percentageNitroValue = parseFloat(percentageNitro);
     const percentageM5Value = parseFloat(percentageM5);
 
-    // Validasi input
     if (
       isNaN(totalMassValue) ||
       isNaN(percentageNitroValue) ||
@@ -33,34 +29,25 @@ function App() {
       return;
     }
 
-    // Densitas bahan bakar
-    const densityNitro = 0.74; // g/ml untuk bensin
-    const densityM5 = 0.80; // g/ml untuk M5
+    const densityNitro = 0.74;
+    const densityM5 = 0.80;
 
-    // Hitung massa masing-masing bahan bakar
     const massNitro = totalMassValue * percentageNitroValue;
     const massM5 = totalMassValue * percentageM5Value;
 
-    // Hitung volume masing-masing bahan bakar
     const volumeNitro = massNitro / densityNitro;
     const volumeM5 = massM5 / densityM5;
 
-    // Hitung total volume bahan bakar
     const totalVolume = volumeNitro + volumeM5;
-
-    // Hitung volume lube (5 ml per 1000 ml)
     const lubeVolume = totalVolume * (5.0 / 1000.0);
 
-    // Perhitungan AFR Campuran
-    const afrNitro = 14.7; // AFR Bensin RON 98
-    const afrM5 = 6.5; // AFR VP Racing M5
+    const afrNitro = 14.7;
+    const afrM5 = 6.5;
     const afrMixture = 1 / (percentageNitroValue / afrNitro + percentageM5Value / afrM5);
 
-    // AFR Target
-    const afrRich = afrMixture * 0.9; // Untuk tenaga maksimum (rich)
-    const afrLean = afrMixture * 1.05; // Untuk efisiensi lebih baik (lean)
+    const afrRich = afrMixture * 0.9;
+    const afrLean = afrMixture * 1.05;
 
-    // Simpan hasil ke state
     setResults({
       volumeNitro: volumeNitro.toFixed(2),
       volumeM5: volumeM5.toFixed(2),
@@ -145,20 +132,25 @@ const styles = {
     flexDirection: "column",
     alignItems: "center",
     justifyContent: "center",
-    height: "100vh",
+    minHeight: "100vh",
     backgroundColor: "#f7f8fc",
     fontFamily: "Arial, sans-serif",
+    padding: "10px",
   },
   card: {
     backgroundColor: "#ffffff",
     padding: "20px",
     borderRadius: "10px",
     boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
-    width: "400px",
+    width: "100%",
+    maxWidth: "400px",
+    boxSizing: "border-box",
   },
   title: {
     marginBottom: "20px",
     color: "#333333",
+    fontSize: "1.5rem",
+    textAlign: "center",
   },
   inputGroup: {
     display: "flex",
@@ -170,6 +162,7 @@ const styles = {
     border: "1px solid #cccccc",
     borderRadius: "5px",
     marginTop: "5px",
+    fontSize: "1rem",
   },
   button: {
     padding: "10px",
@@ -179,6 +172,7 @@ const styles = {
     borderRadius: "5px",
     cursor: "pointer",
     width: "100%",
+    fontSize: "1rem",
   },
   error: {
     color: "red",
