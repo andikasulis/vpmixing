@@ -4,6 +4,7 @@ function App() {
   const [totalMass, setTotalMass] = useState("");
   const [percentageNitro, setPercentageNitro] = useState("");
   const [percentageM5, setPercentageM5] = useState("");
+  const [fuelType, setFuelType] = useState("Nitro+");
 
   const [results, setResults] = useState(null);
   const [error, setError] = useState(null);
@@ -12,8 +13,8 @@ function App() {
     setError(null);
 
     const totalMassValue = parseFloat(totalMass);
-    const percentageNitroValue = parseFloat(percentageNitro);
-    const percentageM5Value = parseFloat(percentageM5);
+    const percentageNitroValue = parseFloat(percentageNitro) / 100;
+    const percentageM5Value = parseFloat(percentageM5) / 100;
 
     if (
       isNaN(totalMassValue) ||
@@ -24,32 +25,43 @@ function App() {
       return;
     }
 
-    if (Math.abs(percentageNitroValue + percentageM5Value - 1.0) > Number.EPSILON) {
+    if (
+      Math.abs(percentageNitroValue + percentageM5Value - 1.0) > 0.0001
+    ) {
       setError("Total persentase Nitro+ dan M5 harus 100%.");
       return;
     }
 
-    const densityNitro = 0.74;
+    // Tentukan AFR dan densitas berdasarkan jenis bahan bakar
+    let afrFuel, densityFuel;
+    if (fuelType === "Nitro+") {
+      afrFuel = 14.7;
+      densityFuel = 0.74;
+    } else if (fuelType === "V-Power") {
+      afrFuel = 14.7; // Nilai AFR untuk Shell V-Power
+      densityFuel = 0.72; // Nilai densitas untuk Shell V-Power
+    }
+
     const densityM5 = 0.80;
 
-    const massNitro = totalMassValue * percentageNitroValue;
+    const massFuel = totalMassValue * percentageNitroValue;
     const massM5 = totalMassValue * percentageM5Value;
 
-    const volumeNitro = massNitro / densityNitro;
+    const volumeFuel = massFuel / densityFuel;
     const volumeM5 = massM5 / densityM5;
 
-    const totalVolume = volumeNitro + volumeM5;
+    const totalVolume = volumeFuel + volumeM5;
     const lubeVolume = totalVolume * (5.0 / 1000.0);
 
-    const afrNitro = 14.7;
     const afrM5 = 6.5;
-    const afrMixture = 1 / (percentageNitroValue / afrNitro + percentageM5Value / afrM5);
+    const afrMixture =
+      1 / (percentageNitroValue / afrFuel + percentageM5Value / afrM5);
 
     const afrRich = afrMixture * 0.9;
     const afrLean = afrMixture * 1.05;
 
     setResults({
-      volumeNitro: volumeNitro.toFixed(2),
+      volumeFuel: volumeFuel.toFixed(2),
       volumeM5: volumeM5.toFixed(2),
       totalVolume: totalVolume.toFixed(2),
       lubeVolume: lubeVolume.toFixed(2),
@@ -80,7 +92,7 @@ function App() {
             />
           </div>
           <div style={styles.inputGroup}>
-            <label>Persentase Nitro+ (0-1):</label>
+            <label>Persentase Nitro+ (0-100):</label>
             <input
               type="number"
               step="0.01"
@@ -91,7 +103,7 @@ function App() {
             />
           </div>
           <div style={styles.inputGroup}>
-            <label>Persentase M5 (0-1):</label>
+            <label>Persentase M5 (0-100):</label>
             <input
               type="number"
               step="0.01"
@@ -100,6 +112,29 @@ function App() {
               onChange={(e) => setPercentageM5(e.target.value)}
               required
             />
+          </div>
+          <div style={styles.inputGroup}>
+            <label>Pilih Jenis Bahan Bakar:</label>
+            <div>
+              <label>
+                <input
+                  type="radio"
+                  value="Nitro+"
+                  checked={fuelType === "Nitro+"}
+                  onChange={(e) => setFuelType(e.target.value)}
+                />
+                Shell Nitro+
+              </label>
+              <label>
+                <input
+                  type="radio"
+                  value="V-Power"
+                  checked={fuelType === "V-Power"}
+                  onChange={(e) => setFuelType(e.target.value)}
+                />
+                Shell V-Power
+              </label>
+            </div>
           </div>
           <button type="submit" style={styles.button}>
             Hitung
@@ -111,7 +146,9 @@ function App() {
         {results && (
           <div style={styles.result}>
             <h2>Hasil Perhitungan:</h2>
-            <p>Volume Nitro+: {results.volumeNitro} ml</p>
+            <p>
+              Volume {fuelType}: {results.volumeFuel} ml
+            </p>
             <p>Volume M5: {results.volumeM5} ml</p>
             <p>Total Volume: {results.totalVolume} ml</p>
             <p>Volume Lube: {results.lubeVolume} ml</p>
