@@ -21,7 +21,7 @@ function App() {
       isNaN(percentageNitroValue) ||
       isNaN(percentageM5Value)
     ) {
-      setError("Harap masukkan angka yang valid.");
+      setError("Harap masukkan angka yang valid..");
       return;
     }
 
